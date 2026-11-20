@@ -1,29 +1,44 @@
 "use client";
 
-import { Check, MessageCircle, Send } from "lucide-react";
+import { Check, Loader2, MessageCircle, Send } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { whatsappHref } from "@/lib/site";
 import { useTranslation } from "@/components/language-provider";
 
 export function EnquiryForm() {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const { t } = useTranslation();
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const message = [
-      "Hello Shree Om Balaji Trader and Supplier (SOBTS EXIM), I would like to send a customer enquiry.",
-      `Name: ${form.get("name")}`,
-      `Email: ${form.get("email")}`,
-      `Phone: ${form.get("phone")}`,
-      `Country: ${form.get("country")}`,
-      `Product requirement: ${form.get("productRequirement")}`,
-      `Message: ${form.get("message")}`,
-    ].join("\n");
+    setStatus("sending");
 
-    window.open(whatsappHref(message), "_blank", "noopener,noreferrer");
-    setSent(true);
+    const form = new FormData(event.currentTarget);
+    const payload = {
+      name: form.get("name") as string,
+      email: form.get("email") as string,
+      phone: form.get("phone") as string,
+      country: form.get("country") as string,
+      productRequirement: form.get("productRequirement") as string,
+      message: form.get("message") as string,
+    };
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        setStatus("sent");
+        (event.target as HTMLFormElement).reset();
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
   }
 
   return (
@@ -32,8 +47,9 @@ export function EnquiryForm() {
         <div className="enquiry-intro">
           <span className="eyebrow"><span className="eyebrow-line" /> {t("CUSTOMER ENQUIRY")}</span>
           <h2>{t("Let's understand your requirement.")}</h2>
-          <p>{t("Share the basics and we'll open a WhatsApp conversation with your enquiry already prepared.")}</p>
-          <div className="enquiry-note"><MessageCircle size={18} /><span>{t("WhatsApp is available on the existing Indian contact number.")}</span></div>
+          <p>{t("Share the basics and we will get back to you with the right product information.")}</p>
+          <div className="enquiry-note"><MessageCircle size={18} /><span>{t("Or reach us directly on WhatsApp for a faster response.")}</span></div>
+          <a className="button button-outline-dark enquiry-whatsapp-link" href={whatsappHref()} target="_blank" rel="noreferrer"><MessageCircle size={16} /> {t("WhatsApp Us")}</a>
         </div>
         <form className="enquiry-form" onSubmit={handleSubmit}>
           <div className="form-grid">
@@ -45,8 +61,12 @@ export function EnquiryForm() {
             <label className="form-field-wide">{t("Message")}<textarea name="message" rows={4} placeholder={t("Tell us about the part, machine, dimensions or quantity")} required /></label>
           </div>
           <div className="enquiry-submit-row">
-            <button className="button button-yellow" type="submit"><Send size={17} /> {t("Send Enquiry on WhatsApp")}</button>
-            {sent ? <span className="form-success" role="status"><Check size={16} /> {t("Enquiry prepared in WhatsApp")}</span> : <small>{t("Your message will be prefilled for review before sending.")}</small>}
+            <button className="button button-yellow" type="submit" disabled={status === "sending"}>
+              {status === "sending" ? <><Loader2 size={17} className="spin" /> {t("Sending...")}</> : <><Send size={17} /> {t("Send Enquiry")}</>}
+            </button>
+            {status === "sent" && <span className="form-success" role="status"><Check size={16} /> {t("Enquiry sent successfully! We'll get back to you soon.")}</span>}
+            {status === "error" && <span className="form-error" role="alert">{t("Failed to send. Please try again or use WhatsApp.")}</span>}
+            {status === "idle" && <small>{t("Your enquiry will be sent directly to our team via email.")}</small>}
           </div>
         </form>
       </div>
