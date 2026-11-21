@@ -1,5 +1,5 @@
 import { ArrowUpRight, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
-import { ContactCta } from "@/components/contact-cta";
+import { EnquiryForm } from "@/components/enquiry-form";
 import { SectionHeading } from "@/components/section-heading";
 import { createTranslator } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/server-locale";
@@ -32,21 +32,10 @@ export default async function ContactPage() {
               <a href={site.mapHref} target="_blank" rel="noreferrer"><span className="contact-method-icon"><MapPin /></span><span><small>{t("Visit / locate us")}</small><strong>Raj Nagar Extension, Ghaziabad</strong></span><ArrowUpRight size={18} /></a>
             </div>
           </div>
-          <div className="contact-card contact-enquiry-card">
-            <span className="eyebrow"><span className="eyebrow-line" /> {t("HOW TO ENQUIRE")}</span>
-            <h2>{t("Share what you already know.")}</h2>
-            <p className="contact-card-lede">{t("You do not need a perfect specification to begin. Any one of these details gives us a useful starting point.")}</p>
-            <div className="contact-steps">
-              <div><span>01</span><p><strong>{t("Product or part name")}</strong><small>{t("Tell us what you need, or share the existing marking.")}</small></p></div>
-              <div><span>02</span><p><strong>{t("Machine context")}</strong><small>{t("Share the equipment, cylinder or application.")}</small></p></div>
-              <div><span>03</span><p><strong>{t("Photo, size or drawing")}</strong><small>{t("Send a clear photo, dimensions or catalogue page.")}</small></p></div>
-            </div>
-            <a className="button button-yellow" href={whatsappHref()} target="_blank" rel="noreferrer">{t("Start WhatsApp Enquiry")} <MessageCircle size={18} /></a>
-            <div className="contact-card-note">{t("Product fit, availability and commercial details are confirmed directly during the enquiry.")}</div>
-          </div>
+          <EnquiryForm compact />
         </div>
       </section>
-      <ContactCta />
+
     </main>
   );
 }

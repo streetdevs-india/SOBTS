@@ -23,5 +23,5 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const currentYear = new Date().getFullYear();
   // Keep the site composition consistent across languages; Arabic copy still
   // renders naturally, but it should not mirror the whole page layout.
-  return <html lang={locale} dir="ltr"><body><LanguageProvider locale={locale}><SiteHeader />{children}<SiteFooter currentYear={currentYear} /><WhatsAppButton /></LanguageProvider></body></html>;
+  return <html lang={locale} dir="ltr"><body><LanguageProvider locale={locale}><a className="skip-link" href="#main-content">Skip to content</a><SiteHeader /><div id="main-content" tabIndex={-1}>{children}</div><SiteFooter currentYear={currentYear} /><WhatsAppButton /></LanguageProvider></body></html>;
 }

@@ -83,8 +83,15 @@ export function SiteHeader() {
       }
     }
 
+    function onEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") { setOpen(false); setProductsOpen(false); }
+    }
     document.addEventListener("mousedown", closeProductsMenu);
-    return () => document.removeEventListener("mousedown", closeProductsMenu);
+    document.addEventListener("keydown", onEscape);
+    return () => {
+      document.removeEventListener("mousedown", closeProductsMenu);
+      document.removeEventListener("keydown", onEscape);
+    };
   }, []);
 
   function changeLanguage(value: string) {
@@ -98,7 +105,7 @@ export function SiteHeader() {
       <div className="topbar">
         <div className="topbar-marquee" aria-label="Company contact information">
           <div className="topbar-track">
-            {[0, 1].map((copy) => (
+            {[0].map((copy) => (
               <div className="topbar-line" aria-hidden={copy === 1} key={copy}>
                 <a href={site.mapHref} target="_blank" rel="noreferrer"><MapPin size={15} /> {site.address}</a>
                 <a href={site.phoneHref}><Phone size={15} /> {site.phone}</a>
@@ -112,7 +119,7 @@ export function SiteHeader() {
       <header className="site-header">
         <div className="site-shell nav-inner">
           <Link href="/" className="brand" aria-label={`${site.name} home`} onClick={() => setOpen(false)}>
-            <Image className="brand-logo" src="/images/sobts-logo.png" alt="Give Us A Try" width={58} height={58} priority />
+            <Image className="brand-logo" src="/images/sobts-logo.png" alt="Shree Om Balaji logo" width={58} height={58} priority />
             <span className="brand-text"><strong>Shree Om Balaji</strong><em>{t("Trader and Supplier")}</em><small>{t("Trading name:")} SOBTS EXIM</small></span>
           </Link>
 
