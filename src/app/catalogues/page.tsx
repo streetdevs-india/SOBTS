@@ -7,7 +7,7 @@ import { createTranslator } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/server-locale";
 import { whatsappHref } from "@/lib/site";
 
-export const metadata = { title: "Catalogues", description: "Download catalogues from Shree Om Balaji Trader and Supplier for oil seals, PU U-seals, hydraulic hoses, JCB spare parts and Tractor Spare Parts." };
+export const metadata = { title: "Product Catalogues — Oil Seals, Hydraulic Hoses & Spare Parts", description: "Download SOBTS EXIM product catalogues for oil seals, PU U-seals, hydraulic hoses, JCB spare parts and tractor spare parts. Free PDF catalogues with product references and specifications.", alternates: { canonical: "https://sobts.com/catalogues" } };
 
 export default async function CataloguesPage() {
   const t = createTranslator(await getRequestLocale());

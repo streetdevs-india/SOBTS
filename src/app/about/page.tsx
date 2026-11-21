@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { createTranslator } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/server-locale";
 
-export const metadata = { title: "About Us", description: "Learn about Shree Om Balaji Trader and Supplier and the product conversations behind the SOBTS EXIM trading name." };
+export const metadata = { title: "About SOBTS EXIM — Shree Om Balaji Trader and Supplier, Ghaziabad", description: "About SOBTS EXIM (Shree Om Balaji Trader and Supplier) — oil seals, hydraulic seals, hoses and tractor spare parts supplier based in Ghaziabad, serving industrial, agricultural and construction sectors across India.", alternates: { canonical: "https://sobts.com/about" } };
 
 export default async function AboutPage() {
   const t = createTranslator(await getRequestLocale());

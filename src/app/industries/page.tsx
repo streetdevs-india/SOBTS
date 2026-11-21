@@ -7,7 +7,7 @@ import { industries } from "@/data/industries";
 import { createTranslator } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/server-locale";
 
-export const metadata = { title: "Industries", description: "Explore the construction, agricultural, industrial and hydraulic applications supported by Shree Om Balaji Trader and Supplier." };
+export const metadata = { title: "Industries We Serve — Construction, Agriculture & Industrial", description: "SOBTS EXIM supplies oil seals, hydraulic seals, hoses and spare parts for construction equipment, agricultural machinery, industrial systems and heavy equipment applications.", alternates: { canonical: "https://sobts.com/industries" } };
 
 export default async function IndustriesPage() {
   const t = createTranslator(await getRequestLocale());

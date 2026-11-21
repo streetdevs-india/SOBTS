@@ -4,7 +4,7 @@ import { products } from "@/data/products";
 import { createTranslator } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/server-locale";
 
-export const metadata = { title: "Products", description: "Browse oil seals, hydraulic seals, pneumatic and PU seals, hydraulic hoses and Tractor Spare Parts." };
+export const metadata = { title: "Products — Oil Seals, Hydraulic Seals, Hoses & Tractor Parts", description: "Browse SOBTS EXIM product range — oil seals, hydraulic seals, pneumatic seals, PU seals, hydraulic hoses, fittings, JCB parts and tractor spare parts. Quality industrial sealing solutions from Ghaziabad.", alternates: { canonical: "https://sobts.com/products" } };
 
 export default async function ProductsPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const t = createTranslator(await getRequestLocale());

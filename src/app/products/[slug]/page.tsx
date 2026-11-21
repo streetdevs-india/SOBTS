@@ -14,7 +14,7 @@ export function generateStaticParams() { return products.map((product) => ({ slu
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const product = getProduct((await params).slug);
-  return product ? { title: product.name, description: product.description } : { title: "Product" };
+  return product ? { title: `${product.name} — SOBTS EXIM`, description: `${product.description} Buy ${product.name.toLowerCase()} from SOBTS EXIM (Shree Om Balaji Trader and Supplier), Ghaziabad.`, alternates: { canonical: `https://sobts.com/products/${product.slug}` } } : { title: "Product" };
 }
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
