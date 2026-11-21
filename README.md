@@ -51,3 +51,13 @@ public/catalogues/ Downloadable PDF catalogues
 ```
 
 Contact details are maintained in `src/lib/site.ts` and product/catalogue content in `src/data/`.
+
+## Contact form email configuration
+
+The contact page and homepage use `/api/contact`. Configure these server-only values in `.env.local` (see `.env.example`):
+
+- `RESEND_API_KEY`: your Resend API key.
+- `CONTACT_FROM_EMAIL`: a sender on a domain verified in your Resend account.
+- `CONTACT_EMAIL`: the enquiry recipient; defaults to `info@sobts-exim.com`.
+
+Restart the server after changing environment values. Without the API key or verified sender configuration, the endpoint returns HTTP 503 and the form offers the existing direct contact channels. A successful submission is shown only after the email provider accepts the message. Real inbox delivery must be checked after sender setup.

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+
 
 function sanitize(str: string) {
   return str
@@ -13,15 +13,32 @@ function sanitize(str: string) {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { name, email, phone, country, productRequirement, message } = body;
-
-    if (!name || !email || !phone || !productRequirement || !message) {
-      return NextResponse.json(
-        { error: "All fields are required" },
-        { status: 400 }
-      );
+    let body: Record<string, unknown>;
+    try {
+      const input = await request.json();
+      if (!input || typeof input !== "object" || Array.isArray(input)) throw new Error("Invalid body");
+      body = input;
+    } catch {
+      return NextResponse.json({ error: "Invalid request." }, { status: 400 });
     }
+    if (body.website) return NextResponse.json({ error: "Unable to submit this enquiry." }, { status: 400 });
+    const limits = { name: 120, email: 254, phone: 40, country: 100, productRequirement: 300, message: 5000 };
+    for (const [field, limit] of Object.entries(limits)) {
+      const value = body[field];
+      if (typeof value !== "string" || !value.trim() || value.length > limit) {
+        return NextResponse.json({ error: "Please complete all fields with valid details." }, { status: 400 });
+      }
+    }
+    const { name, email, phone, country, productRequirement, message } = Object.fromEntries(
+      Object.keys(limits).map((key) => [key, (body[key] as string).trim()])
+    );
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || /[\r\n]/.test(name + email + productRequirement)) {
+      return NextResponse.json({ error: "Please enter valid contact details." }, { status: 400 });
+    }
+    if (!process.env.RESEND_API_KEY || !process.env.CONTACT_FROM_EMAIL) {
+      return NextResponse.json({ error: "Email is temporarily unavailable. Please contact us by phone or WhatsApp." }, { status: 503 });
+    }
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const safeName = sanitize(name);
     const safeEmail = sanitize(email);
@@ -31,8 +48,8 @@ export async function POST(request: Request) {
     const safeMessage = sanitize(message).replace(/\n/g, "<br>");
 
     const { data, error } = await resend.emails.send({
-      from: "SOBTS EXIM Website <onboarding@resend.dev>",
-      to: [process.env.CONTACT_EMAIL || "streetdevs.business@gmail.com"],
+      from: process.env.CONTACT_FROM_EMAIL,
+      to: [process.env.CONTACT_EMAIL || "info@sobts-exim.com"],
       replyTo: email,
       subject: `New Enquiry from ${name} — ${productRequirement}`,
       html: `
@@ -78,7 +95,7 @@ export async function POST(request: Request) {
 
     if (error) {
       console.error("[contact] Resend API error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: "Unable to send your enquiry. Please try WhatsApp or phone." }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, id: data?.id });

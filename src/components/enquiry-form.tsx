@@ -5,16 +5,19 @@ import { FormEvent, useState } from "react";
 import { whatsappHref } from "@/lib/site";
 import { useTranslation } from "@/components/language-provider";
 
-export function EnquiryForm() {
+export function EnquiryForm({ compact = false }: { compact?: boolean }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const { t } = useTranslation();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (status === "sending") return;
+    const formElement = event.currentTarget;
     setStatus("sending");
 
-    const form = new FormData(event.currentTarget);
+    const form = new FormData(formElement);
     const payload = {
+      website: form.get("website") as string,
       name: form.get("name") as string,
       email: form.get("email") as string,
       phone: form.get("phone") as string,
@@ -32,7 +35,7 @@ export function EnquiryForm() {
 
       if (response.ok) {
         setStatus("sent");
-        (event.target as HTMLFormElement).reset();
+        formElement.reset();
       } else {
         setStatus("error");
       }
@@ -42,8 +45,8 @@ export function EnquiryForm() {
   }
 
   return (
-    <section className="enquiry-section" id="enquiry">
-      <div className="site-shell enquiry-shell">
+    <section className={compact ? "enquiry-section enquiry-compact" : "enquiry-section"} id="enquiry">
+      <div className={compact ? "enquiry-shell" : "site-shell enquiry-shell"}>
         <div className="enquiry-intro">
           <span className="eyebrow"><span className="eyebrow-line" /> {t("CUSTOMER ENQUIRY")}</span>
           <h2>{t("Let's understand your requirement.")}</h2>
@@ -51,15 +54,17 @@ export function EnquiryForm() {
           <div className="enquiry-note"><MessageCircle size={18} /><span>{t("Or reach us directly on WhatsApp for a faster response.")}</span></div>
           <a className="button button-outline-dark enquiry-whatsapp-link" href={whatsappHref()} target="_blank" rel="noreferrer"><MessageCircle size={16} /> {t("WhatsApp Us")}</a>
         </div>
-        <form className="enquiry-form" onSubmit={handleSubmit}>
+        <form className="enquiry-form" onSubmit={handleSubmit} aria-busy={status === "sending"}>
+          <label className="form-honeypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
           <div className="form-grid">
-            <label>{t("Name")}<input name="name" type="text" placeholder={t("Your full name")} required /></label>
-            <label>{t("Email")}<input name="email" type="email" placeholder="you@company.com" required /></label>
-            <label>{t("Phone")}<input name="phone" type="tel" placeholder={t("Your phone number")} required /></label>
-            <label>{t("Country")}<input name="country" type="text" placeholder={t("Country")} required /></label>
-            <label className="form-field-wide">{t("Product Requirement")}<input name="productRequirement" type="text" placeholder={t("Oil seals, tractor parts, hoses...")} required /></label>
-            <label className="form-field-wide">{t("Message")}<textarea name="message" rows={4} placeholder={t("Tell us about the part, machine, dimensions or quantity")} required /></label>
+            <label>{t("Name")}<input name="name" autoComplete="name" maxLength={120} type="text" placeholder={t("Your full name")} required /></label>
+            <label>{t("Email")}<input name="email" autoComplete="email" maxLength={254} type="email" placeholder="you@company.com" required /></label>
+            <label>{t("Phone")}<input name="phone" autoComplete="tel" maxLength={40} type="tel" placeholder={t("Your phone number")} required /></label>
+            <label>{t("Country")}<input name="country" autoComplete="country-name" maxLength={100} type="text" placeholder={t("Country")} required /></label>
+            <label className="form-field-wide">{t("Product Requirement")}<input name="productRequirement" maxLength={300} type="text" placeholder={t("Oil seals, tractor parts, hoses...")} required /></label>
+            <label className="form-field-wide">{t("Message")}<textarea name="message" maxLength={5000} rows={4} placeholder={t("Tell us about the part, machine, dimensions or quantity")} required /></label>
           </div>
+          <p className="form-privacy">We use these details to respond to your enquiry. Please do not include sensitive personal information.</p>
           <div className="enquiry-submit-row">
             <button className="button button-yellow" type="submit" disabled={status === "sending"}>
               {status === "sending" ? <><Loader2 size={17} className="spin" /> {t("Sending...")}</> : <><Send size={17} /> {t("Send Enquiry")}</>}
