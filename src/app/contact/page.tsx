@@ -5,7 +5,7 @@ import { createTranslator } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/server-locale";
 import { site, whatsappHref } from "@/lib/site";
 
-export const metadata = { title: "Contact Us", description: "Contact Shree Om Balaji Trader and Supplier in Ghaziabad for oil seals, hydraulic seals, hoses and Tractor Spare Parts enquiries." };
+export const metadata = { title: "Contact SOBTS EXIM — Get a Quote for Oil Seals & Spare Parts", description: "Contact SOBTS EXIM (Shree Om Balaji Trader and Supplier) in Ghaziabad for oil seals, hydraulic seals, hoses, JCB parts and tractor spare parts enquiries. Call, WhatsApp or fill the enquiry form.", alternates: { canonical: "https://sobts.com/contact" } };
 
 export default async function ContactPage() {
   const t = createTranslator(await getRequestLocale());

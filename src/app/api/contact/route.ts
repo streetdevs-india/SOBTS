@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
           <div style="background: #102B50; padding: 28px 32px;">
             <h1 style="margin: 0; color: #F5A000; font-size: 22px; font-weight: 800;">New Customer Enquiry</h1>
-            <p style="margin: 6px 0 0; color: rgba(255,255,255,0.8); font-size: 13px;">Received from sobtsexim.com contact form</p>
+            <p style="margin: 6px 0 0; color: rgba(255,255,255,0.8); font-size: 13px;">Received from sobts.com contact form</p>
           </div>
           <div style="padding: 28px 32px;">
             <table style="width: 100%; border-collapse: collapse;">
